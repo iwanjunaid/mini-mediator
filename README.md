@@ -18,7 +18,7 @@ class MiniMath {
   setMediator(mediator) {
     this.mediator = mediator;
   }
-
+  
   calculateAdd(firstVal, secondVal) {
     return firstVal + secondVal;
   }
@@ -28,11 +28,11 @@ class MiniMath {
   }
 }
 
-class TheApp {
+class OtherComponent {
   setMediator(mediator) {
     this.mediator = mediator;
   }
-  
+
   calculate5Plus3() {
     this.mediator.callApi('MiniMath', 'Add', {firstVal:5, secondVal:3}, function(err, result) {
       console.log(result);
@@ -41,10 +41,10 @@ class TheApp {
 }
 
 const miniMath = new MiniMath();
-const theApp = new TheApp();
+const otherComponent = new OtherComponent();
 
 mediator.register('MiniMath', miniMath);
-mediator.register('TheApp', theApp);
+mediator.register('OtherComponent', otherComponent);
 
-theApp.calculate5Plus3();
+otherComponent.calculate5Plus3();
 ```
