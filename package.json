@@ -6,10 +6,15 @@
   "description": "Simple implementation of mediator pattern for Node.JS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/nyc ./node_modules/.bin/mocha"
   },
   "keywords": [
     "mediator",
     "design patterns"
-  ]
+  ],
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "nyc": "^10.1.2"
+  }
 }
