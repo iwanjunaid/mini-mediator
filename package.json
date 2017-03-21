@@ -1,7 +1,7 @@
 {
   "name": "mini-mediator",
   "author": "Kurniawan Junaidy <iwan.junaid@gmail.com>",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "license": "MIT",
   "description": "Simple implementation of mediator pattern for Node.JS",
   "main": "index.js",
