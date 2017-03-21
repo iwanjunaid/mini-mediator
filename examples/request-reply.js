@@ -1,5 +1,6 @@
 const Mediator = require('../index');
 const mediator = new Mediator();
+const winston = require('winston');
 
 class MiniMath {
   setMediator(mediator) {
@@ -22,7 +23,7 @@ class OtherComponent {
 
   calculate5Plus3() {
     this.mediator.callApi('MiniMath', 'Add', {firstVal:5, secondVal:3}, function(err, result) {
-      console.log(result);
+      winston.log('info', result);
     });
   }
 }

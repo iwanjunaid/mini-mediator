@@ -11,11 +11,17 @@ class MiniMediator extends EventEmitter {
     let cmp, proceed = true;
 
     for (cmp in this.components) {
+      let breakFor = false;
+      
       if (this.components[cmp] === component) {
         proceed = false;
-        break;
+        breakFor = true;
       } else if (cmp === name) {
         proceed = false;
+        breakFor = true;
+      }
+
+      if (breakFor) {
         break;
       }
     }
@@ -49,7 +55,7 @@ class MiniMediator extends EventEmitter {
 
   callApi(name, api, args, callback) {
     if (this.hasComponent(name)) {
-      let component = this.getComponent(name);
+      const component = this.getComponent(name);
       const fullApiName = this.apiPrefix + api;
 
       if (typeof component[fullApiName] === 'function') {

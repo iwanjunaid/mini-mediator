@@ -1,5 +1,6 @@
 const Mediator = require('../index');
 const mediator = new Mediator();
+const winston = require('winston');
 
 class MiniMath {
   setMediator(mediator) {
@@ -37,7 +38,7 @@ class OtherComponent {
   setupListeners() {
     if (this.mediator) {
       this.mediator.registerListener('result', function(data) {
-        console.log(`Receive result for ${data.firstVal} + ${data.secondVal} = ${data.result}`)
+        winston.log('info', `Receive result for ${data.firstVal} + ${data.secondVal} = ${data.result}`);
       });    
     }
   }
@@ -48,7 +49,7 @@ class OtherComponent {
       secondVal: 3
     };
 
-    console.log(`Request calculation for ${reqData.firstVal} + ${reqData.secondVal}`);
+    winston.log('info', `Request calculation for ${reqData.firstVal} + ${reqData.secondVal}`);
     this.mediator.emit('request.for.add', reqData);
   }
 }
