@@ -9,20 +9,20 @@ class MiniMediator extends EventEmitter {
 
   register(name, component) {
     let cmp, proceed = true;
+    let components = this.components;
 
-    for (cmp in this.components) {
-      let breakFor = false;
-      
-      if (this.components[cmp] === component) {
-        proceed = false;
-        breakFor = true;
-      } else if (cmp === name) {
-        proceed = false;
-        breakFor = true;
-      }
+    for (cmp in components) {
+      if (components.hasOwnProperty(cmp)) {
+        let breakFor = false;
 
-      if (breakFor) {
-        break;
+        if (components[cmp] === component || cmp === name) {
+          proceed = false;
+          breakFor = true;
+        }
+
+        if (breakFor) {
+          break;
+        }
       }
     }
 
@@ -31,7 +31,7 @@ class MiniMediator extends EventEmitter {
         component.setMediator(this);
       }
 
-      this.components[name] = component;
+      components[name] = component;
     }
   }
 
