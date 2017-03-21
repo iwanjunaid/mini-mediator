@@ -9,7 +9,7 @@ class MiniMediator extends EventEmitter {
 
   register(name, component) {
     let cmp, proceed = true;
-    let components = this.components;
+    const components = this.components;
 
     for (cmp in components) {
       if (components.hasOwnProperty(cmp)) {
