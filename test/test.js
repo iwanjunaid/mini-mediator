@@ -1,3 +1,4 @@
+const Mediator = require('../index.js');
 const assert = require('assert');
 const EventEmitter = require('events');
 
@@ -21,9 +22,7 @@ class Triangle {
   }
 
   calculateArea(base, height) {
-    const area = 0.5 * base * height;
-
-    return area;
+    return 0.5 * base * height;
   }
 
   apiArea(args, callback) {
@@ -103,14 +102,14 @@ describe('Class MiniMediator', () => {
   it('Should not add component with the same name', () => {
     mediator.register('Triangle', triangle);
 
-    mediator.register('Triangle', new Object());
+    mediator.register('Triangle', {});
     const countComponents = mediator.count();
 
     expect(countComponents).to.eql(1);
   });
 
   it('Should return error if call to unregistered component', (done) => {
-    mediator.callApi('UnregisteredComponent', 'NonExistenceApi', {}, (err, arr) => {
+    mediator.callApi('UnregisteredComponent', 'NonExistenceApi', {}, (err) => {
       expect(err.message).to.eql('Component not found!');
       done();
     });
@@ -126,7 +125,7 @@ describe('Request-reply communication', () => {
     mediator.register('Triangle', triangle);
     mediator.register('Consumer', consumer);
     
-    const area = consumer.calculateTriangleArea(2, 5, (err, area) => {
+    consumer.calculateTriangleArea(2, 5, (err, area) => {
       expect(area).to.eql(5);
       done();
     });
