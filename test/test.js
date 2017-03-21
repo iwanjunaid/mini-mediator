@@ -125,7 +125,6 @@ describe('Request-reply communication', () => {
   it('Should return 5 for area result for Triangle with base 2 height 5', (done) => {
     mediator.register('Triangle', triangle);
     mediator.register('Consumer', consumer);
-
     
     const area = consumer.calculateTriangleArea(2, 5, (err, area) => {
       expect(area).to.eql(5);
