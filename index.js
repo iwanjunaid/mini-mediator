@@ -45,6 +45,21 @@ class MiniMediator extends EventEmitter {
     return this.components[name] !== undefined;
   }
 
+  hasApi(domain, api) {
+    if (this.hasComponent(domain)) {
+      const component = this.getComponent(domain);
+      const fullApiName = this.apiPrefix + api;
+
+      if (typeof component[fullApiName] === 'function') {
+        return true;
+      }
+
+      return false;
+    }
+
+    return false;
+  }
+
   getComponent(name) {
     return this.components[name];
   }

@@ -77,6 +77,19 @@ describe('Class MiniMediator', () => {
     expect(triangleFound).to.be.true;
   });
 
+  it('Should has Area api', () => {
+    mediator.register('Triangle', triangle);
+
+    expect(mediator.hasApi('Triangle', 'Area')).to.be.true;
+  });
+
+  it('Should not have UnknownApi api', () => {
+    mediator.register('Triangle', triangle);
+
+    expect(mediator.hasApi('UnknownDomain', 'UnknownApi')).to.be.false;
+    expect(mediator.hasApi('Triangle', 'UnknownApi')).to.be.false;
+  });
+
   it('Should has exactly one component registered', () => {
     mediator.register('Triangle', triangle);
     const countComponents = mediator.count();
