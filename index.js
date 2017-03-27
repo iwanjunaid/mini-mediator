@@ -8,11 +8,12 @@ class MiniMediator extends EventEmitter {
   }
 
   register(name, component) {
-    let cmp, proceed = true;
+    let proceed = true;
+    const self = this;
     const components = this.components;
 
-    for (cmp in components) {
-      if (components.hasOwnProperty(cmp)) {
+    Object.keys(components).forEach((cmp) => {
+      if (components.hasOwnProperty.call(components, cmp)) {
         let breakFor = false;
 
         if (components[cmp] === component || cmp === name) {
@@ -21,14 +22,18 @@ class MiniMediator extends EventEmitter {
         }
 
         if (breakFor) {
-          break;
+          return false;
         }
       }
-    }
+
+      return true;
+    });
 
     if (proceed) {
-      if (typeof component['setMediator'] === 'function') {
-        component.setMediator(this);
+      if (typeof component.setMediator === 'function') {
+        component.setMediator(this, () => {
+          self.emit('registered', { component: name });
+        });
       }
 
       components[name] = component;
@@ -76,13 +81,19 @@ class MiniMediator extends EventEmitter {
       if (typeof component[fullApiName] === 'function') {
         return component[fullApiName].call(component, args, callback);
       }
-    } else {
-      return callback(new Error('Component not found!'));
+
+      return callback(new Error('API not found!'));
     }
+
+    return callback(new Error('Component not found!'));
   }
 
-  registerListener(eventName, callback) {
-    this.addListener(eventName, callback);
+  registerListener(eventName, listener) {
+    this.addListener(eventName, listener);
+  }
+
+  unregisterListener(eventName, listener) {
+    this.removeListener(eventName, listener);
   }
 }
 

@@ -2,10 +2,19 @@ const Mediator = require('../index.js');
 const assert = require('assert');
 const EventEmitter = require('events');
 
+function registeredHandler(data) {
+  const mediator = this.mediator;
+
+  mediator.unregisterListener('registered', registeredHandler);
+  expect(data.component).to.eql(data.component);
+  this.done();
+};
+
 class Triangle {
-  setMediator(mediator) {
+  setMediator(mediator, setupDone){
     this.mediator = mediator;
     this.setup();
+    setupDone();
   }
 
   setup() {
@@ -70,12 +79,30 @@ describe('Class MiniMediator', () => {
   const mediator = new Mediator();
   const triangle = new Triangle();
 
+  beforeEach(() => {
+    mediator.remove('Triangle');
+    mediator.remove('Consumer');
+  });
+
   it('Should has Triangle component', () => {
     mediator.register('Triangle', triangle);
     const triangleFound = mediator.hasComponent('Triangle');
 
     expect(triangleFound).to.be.true;
   });
+
+  it('Should emit registered event', (done) => {
+    const newMediator = new Mediator();
+    const component = 'Triangle';
+    const context = { 
+      mediator: newMediator,
+      component, 
+      done
+    };
+    
+    newMediator.registerListener('registered', registeredHandler.bind(context));
+    newMediator.register('Triangle', triangle);
+  })
 
   it('Should has Area api', () => {
     mediator.register('Triangle', triangle);
@@ -119,6 +146,14 @@ describe('Class MiniMediator', () => {
     const countComponents = mediator.count();
 
     expect(countComponents).to.eql(1);
+  });
+
+  it('Should return API not found error if a call to undefined API occurs', (done) => {
+    mediator.register('Triangle', triangle);
+    mediator.callApi('Triangle', 'NonExistenceApi', {}, (err) => {
+      expect(err.message).to.eql('API not found!'); 
+      done();
+    });
   });
 
   it('Should return error if call to unregistered component', (done) => {
