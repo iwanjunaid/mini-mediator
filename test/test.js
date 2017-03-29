@@ -7,6 +7,7 @@ function registeredHandler(data) {
 
   mediator.unregisterListener('registered', registeredHandler);
   expect(data.component).to.eql(data.component);
+  expect(data.isRegistered(data.component)).to.be.true;
   this.done();
 };
 
