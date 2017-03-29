@@ -54,6 +54,12 @@ class MiniMediator extends EventEmitter {
     if (name in this.components) {
       delete this.components[name];
     }
+
+    const index = this.registered.indexOf(name);
+
+    if (index > -1) {
+      this.registered.splice(index, 1);
+    }
   }
 
   hasComponent(name) {
