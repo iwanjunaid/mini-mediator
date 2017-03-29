@@ -3,7 +3,9 @@ const EventEmitter = require('events');
 class MiniMediator extends EventEmitter {
   constructor(apiPrefix) {
     super();
+
     this.components = {};
+    this.registered = [];
     this.apiPrefix = apiPrefix || 'api';
   }
 
@@ -11,6 +13,7 @@ class MiniMediator extends EventEmitter {
     let proceed = true;
     const self = this;
     const components = this.components;
+    const registered = this.registered;
 
     Object.keys(components).forEach((cmp) => {
       if (components.hasOwnProperty.call(components, cmp)) {
@@ -32,11 +35,18 @@ class MiniMediator extends EventEmitter {
     if (proceed) {
       if (typeof component.setMediator === 'function') {
         component.setMediator(this, () => {
-          self.emit('registered', { component: name });
+          registered.push(name);
+          components[name] = component;
+
+          self.emit('registered', {
+            component: name,
+            members: registered,
+            isRegistered: function (search) {
+              return self.registered.indexOf(search) > -1;
+            },
+          });
         });
       }
-
-      components[name] = component;
     }
   }
 
