@@ -17,8 +17,9 @@ const Mediator = require('mini-mediator');
 const mediator = new Mediator();
 
 class MiniMath {
-  setMediator(mediator) {
+  setMediator(mediator, done) {
     this.mediator = mediator;
+    done();
   }
   
   calculateAdd(firstVal, secondVal) {

@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const Promise = require('bluebird');
 
 class MiniMediator extends EventEmitter {
   constructor(apiPrefix) {
@@ -41,9 +42,7 @@ class MiniMediator extends EventEmitter {
           self.emit('registered', {
             component: name,
             members: registered,
-            isRegistered: function (search) {
-              return self.registered.indexOf(search) > -1;
-            },
+            isRegistered: search => self.registered.indexOf(search) > -1,
           });
         });
       }
@@ -104,6 +103,10 @@ class MiniMediator extends EventEmitter {
     return callback(new Error('Component not found!'));
   }
 
+  callApiPromise(name, api, args) {
+    return Promise.fromCallback(this.callApi.bind(this, name, api, args));
+  }
+
   registerListener(eventName, listener) {
     this.addListener(eventName, listener);
   }
@@ -114,4 +117,3 @@ class MiniMediator extends EventEmitter {
 }
 
 module.exports = MiniMediator;
-
