@@ -1,5 +1,4 @@
 const Mediator = require('../index.js');
-const assert = require('assert');
 const EventEmitter = require('events');
 
 function registeredHandler(data) {
@@ -9,10 +8,10 @@ function registeredHandler(data) {
   expect(data.component).to.eql(data.component);
   expect(data.isRegistered(data.component)).to.be.true;
   this.done();
-};
+}
 
 class Triangle {
-  setMediator(mediator, setupDone){
+  setMediator(mediator, setupDone) {
     this.mediator = mediator;
     this.setup();
     setupDone();
@@ -27,7 +26,7 @@ class Triangle {
       const height = data.height;
       const area = self.calculateArea(base, height);
 
-      mediator.emit('result', {area});
+      mediator.emit('result', { area });
     });
   }
 
@@ -55,7 +54,7 @@ class Consumer extends EventEmitter {
     const mediator = self.mediator;
     
     mediator.registerListener('result', (data) => {
-      self.emit('result', data); 
+      self.emit('result', data);
     });
   }
 
@@ -63,16 +62,23 @@ class Consumer extends EventEmitter {
     const self = this;
     const mediator = self.mediator;
 
-    mediator.callApi('Triangle', 'Area', {base, height}, (err, area) => {
-      return callback(err, area); 
+    mediator.callApi('Triangle', 'Area', { base, height }, (err, area) => {
+      return callback(err, area);
     });
+  }
+
+  calculateTriangleAreaAsync(base, height) {
+    const self = this;
+    const mediator = self.mediator;
+
+    return mediator.callApiAsync('Triangle', 'Area', { base, height });
   }
 
   requestCalculateTriangleArea(base, height) {
     const self = this;
     const mediator = self.mediator;
 
-    mediator.emit('calculate', {base, height});
+    mediator.emit('calculate', { base, height });
   }
 }
 
@@ -95,15 +101,15 @@ describe('Class MiniMediator', () => {
   it('Should emit registered event', (done) => {
     const newMediator = new Mediator();
     const component = 'Triangle';
-    const context = { 
+    const context = {
       mediator: newMediator,
-      component, 
-      done
+      component,
+      done,
     };
-    
+
     newMediator.registerListener('registered', registeredHandler.bind(context));
     newMediator.register('Triangle', triangle);
-  })
+  });
 
   it('Should has Area api', () => {
     mediator.register('Triangle', triangle);
@@ -152,7 +158,7 @@ describe('Class MiniMediator', () => {
   it('Should return API not found error if a call to undefined API occurs', (done) => {
     mediator.register('Triangle', triangle);
     mediator.callApi('Triangle', 'NonExistenceApi', {}, (err) => {
-      expect(err.message).to.eql('API not found!'); 
+      expect(err.message).to.eql('API not found!');
       done();
     });
   });
@@ -173,11 +179,21 @@ describe('Request-reply communication', () => {
   it('Should return 5 for area result for Triangle with base 2 height 5', (done) => {
     mediator.register('Triangle', triangle);
     mediator.register('Consumer', consumer);
-    
+
     consumer.calculateTriangleArea(2, 5, (err, area) => {
       expect(area).to.eql(5);
       done();
     });
+  });
+
+  it('Should return 5 for area result for Triangle with base 2 height 5 using Promise', () => {
+    mediator.register('Triangle', triangle);
+    mediator.register('Consumer', consumer);
+
+    return consumer.calculateTriangleAreaAsync(2, 5)
+      .then((area) => {
+        expect(area).to.eql(5);
+      });
   });
 });
 
@@ -195,6 +211,6 @@ describe('Pub-sub communication', () => {
       done();
     });
 
-    consumer.requestCalculateTriangleArea(2, 5); 
+    consumer.requestCalculateTriangleArea(2, 5);
   });
 });
