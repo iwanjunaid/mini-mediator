@@ -103,7 +103,7 @@ class MiniMediator extends EventEmitter {
     return callback(new Error('Component not found!'));
   }
 
-  callApiAsync(name, api, args) {
+  callApiPromise(name, api, args) {
     return Promise.fromCallback(this.callApi.bind(this, name, api, args));
   }
 

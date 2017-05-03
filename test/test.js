@@ -52,7 +52,7 @@ class Consumer extends EventEmitter {
   setup() {
     const self = this;
     const mediator = self.mediator;
-    
+
     mediator.registerListener('result', (data) => {
       self.emit('result', data);
     });
@@ -67,11 +67,11 @@ class Consumer extends EventEmitter {
     });
   }
 
-  calculateTriangleAreaAsync(base, height) {
+  calculateTriangleAreaPromise(base, height) {
     const self = this;
     const mediator = self.mediator;
 
-    return mediator.callApiAsync('Triangle', 'Area', { base, height });
+    return mediator.callApiPromise('Triangle', 'Area', { base, height });
   }
 
   requestCalculateTriangleArea(base, height) {
@@ -190,7 +190,7 @@ describe('Request-reply communication', () => {
     mediator.register('Triangle', triangle);
     mediator.register('Consumer', consumer);
 
-    return consumer.calculateTriangleAreaAsync(2, 5)
+    return consumer.calculateTriangleAreaPromise(2, 5)
       .then((area) => {
         expect(area).to.eql(5);
       });
