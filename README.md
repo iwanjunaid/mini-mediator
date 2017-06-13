@@ -3,7 +3,7 @@
 mini-mediator
 =============
 
-Simple implementation of mediator pattern in Node.JS.
+Simple implementation of mediator pattern and observer pattern in Node.JS.
 
 ## Installation
 
