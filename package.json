@@ -9,6 +9,10 @@
   "scripts": {
     "test": "./node_modules/.bin/nyc ./node_modules/.bin/mocha"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:iwanjunaid/mini-mediator.git"
+  },
   "keywords": [
     "mediator",
     "design patterns"
