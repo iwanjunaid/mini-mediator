@@ -62,7 +62,7 @@ class MiniMediator extends EventEmitter {
   }
 
   isRegistered(name) {
-    return this.registered[name] !== undefined;
+    return this.registered.indexOf(name) !== -1;
   }
   
   hasComponent(name) {
