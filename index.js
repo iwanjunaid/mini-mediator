@@ -67,7 +67,7 @@ class MiniMediator extends EventEmitter {
   isRegistered(name) {
     return this.registered.indexOf(name) !== -1;
   }
-  
+
   hasComponent(name) {
     return this.components[name] !== undefined;
   }
@@ -163,8 +163,7 @@ class MiniMediator extends EventEmitter {
 
         Promise.all(promises)
           .then(results => callback(...results));
-      },
-    );
+      });
   }
 }
 
