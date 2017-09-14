@@ -26,6 +26,7 @@
     "nyc": "^10.1.2"
   },
   "dependencies": {
+    "async": "^2.5.0",
     "bluebird": "^3.5.0"
   }
 }

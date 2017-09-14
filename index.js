@@ -1,5 +1,8 @@
 const EventEmitter = require('events');
 const Promise = require('bluebird');
+const until = require('async/until');
+const each = require('async/each');
+const setImmediate = require('async/setImmediate');
 
 class MiniMediator extends EventEmitter {
   constructor(apiPrefix) {
@@ -117,6 +120,38 @@ class MiniMediator extends EventEmitter {
 
   unregisterListener(eventName, listener) {
     this.removeListener(eventName, listener);
+  }
+
+  waitFor(deps, callback) {
+    const self = this;
+    let depsArr = [];
+
+    if (!Array.isArray(deps)) {
+      depsArr.push(String(deps));
+    } else {
+      depsArr = Array.from(deps);
+    }
+
+    const count = depsArr.length;
+    let registeredCount = 0;
+
+    until(() => {
+      return count === registeredCount;
+    }, (untilCb) => {
+      registeredCount = 0;
+
+      each(depsArr, (dep, eachCb) => {
+        if (self.isRegistered(dep)) {
+          registeredCount++;
+        }
+
+        setImmediate(eachCb);
+      }, (err) => {
+        setImmediate(untilCb);
+      });
+    }, (err) => {
+      callback();
+    });
   }
 }
 
