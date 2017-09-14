@@ -122,36 +122,49 @@ class MiniMediator extends EventEmitter {
     this.removeListener(eventName, listener);
   }
 
-  waitFor(deps, callback) {
+  waitFor(...args) {
+    const callback = args.pop();
+    if (typeof callback !== 'function') throw new Error('callback is not function.');
+
     const self = this;
     let depsArr = [];
-
-    if (!Array.isArray(deps)) {
-      depsArr.push(String(deps));
+    if (Array.isArray(args[0])) {
+      depsArr = depsArr.concat(args[0]);
     } else {
-      depsArr = Array.from(deps);
+      depsArr = args;
     }
 
     const count = depsArr.length;
     let registeredCount = 0;
 
-    until(() => {
-      return count === registeredCount;
-    }, (untilCb) => {
-      registeredCount = 0;
+    until(
+      () => count === registeredCount,
+      (untilCb) => {
+        registeredCount = 0;
 
-      each(depsArr, (dep, eachCb) => {
-        if (self.isRegistered(dep)) {
-          registeredCount++;
-        }
+        each(depsArr, (dep, eachCb) => {
+          if (self.isRegistered(dep)) {
+            registeredCount += 1;
+          }
 
-        setImmediate(eachCb);
-      }, (err) => {
-        setImmediate(untilCb);
-      });
-    }, (err) => {
-      callback();
-    });
+          setImmediate(eachCb);
+        }, () => {
+          setImmediate(untilCb);
+        });
+      },
+      () => {
+        const promises = [];
+
+        depsArr.forEach((dep, index) => {
+          promises[index] = self.callApiPromise(dep, 'Default', null)
+            .then(result => result)
+            .catch(() => null);
+        });
+
+        Promise.all(promises)
+          .then(results => callback(...results));
+      },
+    );
   }
 }
 
