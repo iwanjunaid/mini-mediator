@@ -124,16 +124,13 @@ class MiniMediator extends EventEmitter {
 
   waitFor(...args) {
     const callback = args.pop();
+
     if (typeof callback !== 'function') throw new Error('callback is not function.');
+    if (args.length === 0) throw new Error('parameters must be there are components and callback');
+
+    const depsArr = args.reduce((prev, current) => prev.concat(current), []);
 
     const self = this;
-    let depsArr = [];
-    if (Array.isArray(args[0])) {
-      depsArr = depsArr.concat(args[0]);
-    } else {
-      depsArr = args;
-    }
-
     const count = depsArr.length;
     let registeredCount = 0;
 
